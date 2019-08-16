@@ -15,7 +15,8 @@ export default  class CommentForm extends Component {
         this.state = {
             comment : {
                 comment: '',
-                rating:  1
+                rating:  1,
+                rarity: 1
             }
         };
     }
@@ -35,7 +36,8 @@ export default  class CommentForm extends Component {
                     return {
                         comment : {
                             comment: '',
-                            rating:  1
+                            rating:  1,
+                            rarity: 1
                         }
                     }
                 });
