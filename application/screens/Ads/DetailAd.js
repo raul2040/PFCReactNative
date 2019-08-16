@@ -43,6 +43,7 @@ export default class DetailAd extends Component {
                         goHome={this.goHome.bind(this)}
                         editAd={this.editAd.bind(this)}
                         ad={ad}
+                        editable={true}
                     />
 
                     <CommentForm

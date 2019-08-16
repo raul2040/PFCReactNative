@@ -9,6 +9,8 @@ import *   as firebase from 'firebase';
 import Toast from 'react-native-simple-toast';
 
 
+
+
 export default  class CommentForm extends Component {
     constructor() {
         super();
@@ -29,6 +31,8 @@ export default  class CommentForm extends Component {
             let ref = firebase.database().ref().child('comments');
             const key = ref.push().key;
 
+            this.updateAdCommentData();
+
             data[`${this.props.adId}/${key}`] = comment; 
 
             ref.update(data).then(() => {
@@ -44,6 +48,22 @@ export default  class CommentForm extends Component {
                 Toast.showWithGravity('Comentario publicado!', Toast.LONG, Toast.TOP);
             })
         }
+    }
+
+    updateAdCommentData () {
+        const adRef = firebase.database().ref(`ads/${this.props.adId}`)
+        const {rating, rarity} = this.state.comment;
+        let nComments = 0;
+        let ratingCounter = rating + rarity;
+        adRef.on('value', snapShot => {
+            nComments = snapShot.val().nComments +1;
+            ratingCounter = snapShot.val().ratingCounter + (ratingCounter)
+        })        
+        adRef.child('nComments').set(nComments);
+        adRef.child('ratingCounter').set(ratingCounter);
+
+        /* Aquí actualizamos el nº de comentarios que tiene el anuncio y ratingCounter que viene a ser
+        la valoración total, sumando el raiting y el rarity */
     }
 
     onChange(comment) {

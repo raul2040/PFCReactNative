@@ -8,6 +8,7 @@ import DetailAd from '../screens/Ads/DetailAd';
 import EditAdScreen from '../screens/Ads/EditAd';
 import ProfileScreen from '../screens/Profile';
 import ReviewAds from '../screens/Ads/ReviewAd';
+import RelevantAds from '../screens/Ads/RelevantAds';
 
 const navigationOptions = {
     navigationOptions: {
@@ -75,7 +76,7 @@ const adsScreenStack = StackNavigator(
                 headerLeft: leftIcon(navigation, 'bars')
             })
         },
-        EditAdScreen: {
+        EditAd: {
             screen: EditAdScreen,
             navigationOptions: ({navigation}) => ({
                 title: 'Editar Anuncio',
@@ -130,6 +131,21 @@ const reviewsAdScreenStack = StackNavigator(
     navigationOptions
 );
 
+const mostRelevantsAdsStack = StackNavigator (
+    {
+        RelevantAds: {
+            screen: RelevantAds,
+            navigationOptions: ({navigation}) => ({
+                title: 'Anuncios más relevantes',
+                drawerIcon: ({tintColor}) => (<Icon name="exclamation" size={24} style={{color: tintColor}}/>),
+                headerLeft: leftIcon(navigation, 'bars'),
+                headerRight: rightIcon(navigation, 'home')
+            })
+        }
+    },
+    navigationOptions
+)
+
 
 export default DrawerNavigator(
     {
@@ -138,6 +154,9 @@ export default DrawerNavigator(
         },
         ReviewsAdScreen: {
             screen: reviewsAdScreenStack
+        },
+        mostRelevantsAds: {
+            screen: mostRelevantsAdsStack
         },
         ProfileScreen: {
             screen: profileScreenStack

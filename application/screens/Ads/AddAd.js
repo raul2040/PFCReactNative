@@ -18,7 +18,9 @@ export default class AddAd extends Component {
                 name: '',
                 address: '',
                 capacity: 0,
-                description: ''
+                description: '',
+                nComments:0,
+                ratingCounter:0
             }
         };
     }
