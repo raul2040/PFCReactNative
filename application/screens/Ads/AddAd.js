@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import BackgroundImage from '../../components/BackgroundImage';
-import { View, StyleSheet } from 'react-native';
+import { ScrollView, View,StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
 import { options, Ad } from '../../forms/ad';
 import t from 'tcomb-form-native';
@@ -20,8 +20,10 @@ export default class AddAd extends Component {
                 capacity: 0,
                 description: '',
                 nComments:0,
-                ratingCounter:0
-            }
+                ratingCounter:0,
+                isEvent: false
+            },
+            options: options
         };
     }
 
@@ -44,7 +46,14 @@ export default class AddAd extends Component {
     }
 
     onChange(ad) {
-        this.setState({ ad })
+        let options = t.update(this.state.options, {
+            fields: {
+                eventDate: {
+                    hidden: { '$set': !ad.isEvent }
+                }
+            }
+        })
+        this.setState({ ad, options });
     }
 
     render() {
@@ -52,13 +61,13 @@ export default class AddAd extends Component {
 
         return (
             <BackgroundImage source={require('../../../assets/images/bg-auth.jpg')}>
-                <View style={styles.container}>
+                <ScrollView style={styles.container}>
                     <Card title='Formulario de Anuncios'>
-                        <View>
+                        <View style={styles.formContainer}>
                             <Form
                                 ref="form"
                                 type={Ad}
-                                options={options}
+                                options={this.state.options}
                                 value={ad}
                                 onChange={(v) => this.onChange(v)}
                             />
@@ -72,7 +81,7 @@ export default class AddAd extends Component {
                             iconColor='#fff'
                         />
                     </Card>
-                </View>
+                </ScrollView>
             </BackgroundImage>
         )
     }
@@ -82,5 +91,10 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'rgba(231, 228, 224, 0.8)',
         padding: 10
+    },
+    formContainer: {
+        justifyContent: 'center',
+        padding: 10,
+        backgroundColor: '#ffffff',
     }
 })
