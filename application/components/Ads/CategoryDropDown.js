@@ -10,38 +10,33 @@ export default class CategoryDropDown extends Component {
             categories: [],
             loaded: false
         };
-        this.refsAds = firebase.database().ref().child('Categories');
     }
 
     componentDidMount() {
-        this.refsAds.on('value', snapshot => {
-            debugger;
-            let categories = [];
+        const categories = [];
+        firebase.database().ref().child('Categories').on('value', snapshot => {
             snapshot.forEach(row => {
                 categories.push({
                     value: row.key,
-                    label: row.val().name,
-                })
+                    label: row.val(),
+                });
             });
-            this.setState({
-                categories,
-                loaded: true
-            })
-        });
+            this.setState({categories,loaded: true})     
+        })   
     }
 
     render() {
         const {loaded, categories} = this.state;
-        const {onChangeAd, categoriesId} = this.props;
+        const {onChangeCategory, categoryId} = this.props;
         if(!loaded) {
             return <PreLoader/>
         }
         return (
             <RNPickerSelect 
-                onValueChange={(Id) => onChangeAd(Id)} 
+                onValueChange={(Id) => onChangeCategory(Id)} 
                 items={categories}    
-                placeholder={{label: 'Selecciona un anuncio', value: null}}
-                value={adId}
+                placeholder={{label: 'Selecciona una categoria', value: null}}
+                value={categoryId}
             />
         );
     }

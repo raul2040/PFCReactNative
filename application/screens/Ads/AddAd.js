@@ -8,6 +8,7 @@ import { Card } from 'react-native-elements';
 const Form = t.form.Form;
 import Toast from 'react-native-simple-toast';
 import AppButton from '../../components/AppButton';
+import CategoryDropDown from '../../components/Ads/CategoryDropDown';
 
 
 export default class AddAd extends Component {
@@ -21,18 +22,41 @@ export default class AddAd extends Component {
                 description: '',
                 nComments:0,
                 ratingCounter:0,
-                isEvent: false
+                isEvent: false,
+                categoryId: '',
+                eventDate: false
             },
-            options: options
+            options: options,
+            categoryId: null
         };
     }
 
+    async componentDidMount() {   
+        const categories = [];
+        await firebase.database().ref().child('Categories').on('value', snapshot => {
+            snapshot.forEach(row => {
+                categories.push({
+                    value: row.key,
+                    label: row.val(),
+                });
+            });
+        })   
+        this.setState({categories})     
+    }
+
+
+
     save() {
+        debugger;
         const validate = this.refs.form.getValue();
-        if (validate) {
+        if (validate && this.state.categoryId != null) {
             let data = {};
+            const ad = Object.assign(this.state.ad, {
+                category: this.state.categoryId
+            });
             const key = firebase.database().ref().child('ads').push().key; //De esta forma creamos un id único para nuestro registro.
-            data[`ads/${key}`] = this.state.ad;
+            data[`ads/${key}`] = ad;
+            
             firebase.database().ref().update(data)
                 .then(() => {
                     Toast.showWithGravity('Anuncio dado de alta', Toast.LONG, Toast.BOTTOM);
@@ -56,9 +80,14 @@ export default class AddAd extends Component {
         this.setState({ ad, options });
     }
 
+    onChangeCategory (categoryId) {
+        this.setState({
+            categoryId,
+        })
+    }
+
     render() {
         const { ad } = this.state;
-
         return (
             <BackgroundImage source={require('../../../assets/images/bg-auth.jpg')}>
                 <ScrollView style={styles.container}>
@@ -70,6 +99,10 @@ export default class AddAd extends Component {
                                 options={this.state.options}
                                 value={ad}
                                 onChange={(v) => this.onChange(v)}
+                            />
+                            <CategoryDropDown
+                                onChangeCategory={this.onChangeCategory.bind(this)}
+                                categoryId={this.state.categoryId}
                             />
                         </View>
                         <AppButton

@@ -4,8 +4,7 @@ const Form = t.form.Form;
 import sliderTemplate from './templates/slider';
 import {  StyleSheet } from 'react-native';
 import CategoryDropDown from '../components/Ads/CategoryDropDown';
-t.form.Form.stylesheet.datepicker.normal.backgroundColor = 'rgba(255, 38, 74, 0.9)'
-t.form.Form.stylesheet.datepicker.normal.color = 'rgba(255, 38, 74, 0.9)'
+import *  as firebase from 'firebase';
 
 export const Ad = t.struct({
     name: t.String,
