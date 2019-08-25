@@ -23,8 +23,7 @@ export default class AddAd extends Component {
                 nComments:0,
                 ratingCounter:0,
                 isEvent: false,
-                categoryId: '',
-                eventDate: false
+                category: '',
             },
             options: options,
             categoryId: null
@@ -47,13 +46,10 @@ export default class AddAd extends Component {
 
 
     save() {
-        debugger;
         const validate = this.refs.form.getValue();
         if (validate && this.state.categoryId != null) {
             let data = {};
-            const ad = Object.assign(this.state.ad, {
-                category: this.state.categoryId
-            });
+            const ad = Object.assign({}, this.state.ad, {category: this.state.categoryId } )
             const key = firebase.database().ref().child('ads').push().key; //De esta forma creamos un id único para nuestro registro.
             data[`ads/${key}`] = ad;
             
@@ -66,6 +62,9 @@ export default class AddAd extends Component {
                     Toast.showWithGravity(`Se ha producido un error: ${error.message}`, Toast.LONG, Toast.BOTTOM);
 
                 })
+        }
+        else {
+            Toast.showWithGravity(`Se ha producido un error: Por favor rellene todos los campos`, Toast.LONG, Toast.BOTTOM);
         }
     }
 

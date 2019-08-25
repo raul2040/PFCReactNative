@@ -11,7 +11,7 @@ export const Ad = t.struct({
     address: t.String,
     capacity: t.Number,
     isEvent: t.Boolean,
-    eventDate: t.Date,
+    eventDate: t.maybe(t.Date),
     description: t.String,
 })
 
