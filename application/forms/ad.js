@@ -2,9 +2,6 @@ import React from 'react';
 import t from 'tcomb-form-native';
 const Form = t.form.Form;
 import sliderTemplate from './templates/slider';
-import {  StyleSheet } from 'react-native';
-import CategoryDropDown from '../components/Ads/CategoryDropDown';
-import *  as firebase from 'firebase';
 
 export const Ad = t.struct({
     name: t.String,

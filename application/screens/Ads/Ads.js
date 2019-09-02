@@ -7,6 +7,7 @@ import * as firebase from 'firebase';
 import {NavigationActions} from 'react-navigation';
 import AdsEmpty from '../../components/Ads/AdEmpty';
 import AdAddButton from '../../components/Ads/AdAddButton';
+import SearchAds from '../../components/Ads/SearchAd';
 //import { timingSafeEqual } from 'crypto';
 
 export default class Ads extends Component {
@@ -40,13 +41,9 @@ export default class Ads extends Component {
         this.refsAds.on('value', snapshot => {
             let ads = [];
             snapshot.forEach(row => {
-                ads.push({
-                    id: row.key,
-                    name: row.val().name,
-                    address: row.val().address,
-                    capacity: row.val().capacity,
-                    description: row.val().description
-                })
+                let ad = {... row.val()}
+                ad['id'] = row.key
+                ads.push(ad);
             });
             this.setState({
                 ads,
@@ -116,6 +113,10 @@ export default class Ads extends Component {
                 .endAt(`${search}\uf8ff`)
     }
 
+    onAdsFiltered(ads) {
+        this.setState({ads})
+    };
+
     render(){
         const {loaded, ads} = this.state
         const searchBar = (
@@ -149,7 +150,11 @@ export default class Ads extends Component {
                     renderItem={(data) => this.renderAd(data.item)} //En data item encontramos los items que contiene la data en este caso anuncios
                     keyExtractor={(data) => data.id}
                 />
-                <AdAddButton addAd={this.addAd.bind(this)}/>
+                <SearchAds ads={ads}
+                    onAdsFiltered={this.onAdsFiltered.bind(this)}
+                    reloadAds={this._loadFirebaseAds.bind(this)}
+                />
+                
             </BackgroundImage>
         )
 
