@@ -1,71 +1,62 @@
-import React, {Component} from 'react';
-import {AsyncStorage, Text, View} from 'react-native';
+import React, { Component } from 'react';
+import { AsyncStorage, Text, View, Image } from 'react-native';
 import BackgroundImage from '../components/BackgroundImage';
-import {Card, Input} from 'react-native-elements';
+import { Card, Input } from 'react-native-elements';
 import AppButton from '../components/AppButton';
 import Toast from 'react-native-simple-toast';
+import * as firebase from 'firebase';
+import EditUser from '../components/User/EditUser';
 
 
-export default class Profile extends Component{
+export default class Profile extends Component {
     constructor() {
         super();
-        this.state  = {
-            user: {
-                name: '',
-                age:''
-            }
+        this.state = {
+            user: {}
         }
+        this.refsUser = null;
     }
-    
+
     componentDidMount() {
-        this.fetch().then(() => {
-                Toast.showWithGravity('Usuario Obtenidoo', Toast.LONG, Toast.BOTTOM);
+        this.fetch().then((usrID) => {
+            this.refsUser = firebase.database().ref().child(`users/${usrID}`);
+            this.refsUser.on('value', snapshot => {
+                const user = snapshot.val();
+                this.setState({
+                    user
+                })
             });
+        });
     }
 
-    updateName(val) {
-        let state = this.state.user;
-        this.setState({
-            user: Object.assign({}, state, {
-                name: val
-            })
-        })
-    }
-
-    updateAge(val) {
-        let state = this.state.user;
-        this.setState({
-            user: Object.assign({}, state, {
-                age: val
-            })
-        })
-    }
+    saveChanges(user) {
+        const updatedUser = Object.assign(this.state.user, user);
+        this.refsUser.update(updatedUser)
+    };
 
     render() {
-        const {user} = this.state;
+        const { profileImage, description, Age, musicGenre, town, username } = this.state.user;
         return (
             <BackgroundImage source={require('../../assets/images/bg-auth.jpg')}>
-                <Card>
-                    <Input
-                        placeholder={'Nombre del usuario'}
-                        shake={true}
-                        value={user.name}
-                        onChangeText={(val) => this.updateName(val)}
-                    />
-                    <Input
-                        placeholder={'Edad del usuario'}
-                        shake={true}
-                        value={user.age}
-                        onChangeText={(val) => this.updateAge(val)}
-                    />
-                    <View style={{marginTop: 12}}>
-                        <AppButton 
-                            bgColor="rgba(203,78,72,0.9)"
-                            title="Guardar en local"
-                            action={this.save.bind(this)}
-                            iconName="save"
-                            iconSize={30}
-                            iconColor="#fff"
+                <Card
+                    title={username}
+                    image={{ uri: profileImage }}>
+                    <Text style={{ marginBottom: 15 , marginTop: 15 }}>
+                        Descripción: {description}
+                    </Text>
+                    <Text style={{ marginBottom: 15, marginTop: 15 }}>
+                        Edad: {Age}
+                    </Text>
+                    <Text style={{ marginBottom: 15, marginTop: 15 }}>
+                        Población: {town}
+                    </Text>
+                    <Text style={{ marginBottom: 15, marginTop: 15 }}>
+                        Géneros de Música favoritos: {musicGenre}
+                    </Text>
+                    <View style={{ marginTop: 12 }}>
+                        <EditUser
+                            saveChanges={this.saveChanges.bind(this)}
+                            user={this.state.user}
                         />
                     </View>
                 </Card>
@@ -74,29 +65,17 @@ export default class Profile extends Component{
     }
 
 
-    async save () {
+    async fetch() {
         try {
-            const user = {
-                name: this.state.user.name,
-                age: this.state.user.age
-            };
-            await AsyncStorage.setItem('user', JSON.stringify(user));
-            Toast.showWithGravity('Usuario guardado correctamente', Toast.LONG, Toast.BOTTOM);
-        } catch(error) {
-            Toast.showWithGravity('Error guardando', Toast.LONG, Toast.BOTTOM);
-        }
-    }
-
-    async fetch () {
-        try {
-            let user = await AsyncStorage.getItem('user');
+            let user = await AsyncStorage.getItem('userID');
             if (user) {
                 let parsed = JSON.parse(user);
                 this.setState({
                     user: parsed
                 })
+                return parsed;
             }
-        } catch(error) {
+        } catch (error) {
             Toast.showWithGravity('Error obteniendo', Toast.LONG, Toast.BOTTOM);
         }
     }

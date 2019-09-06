@@ -1,5 +1,5 @@
-import React,{Component} from 'react';
-import {View} from 'react-native';
+import React, { Component } from 'react';
+import { View, Dimensions } from 'react-native';
 import BackGroundImage from '../components/BackgroundImage';
 import AppButton from '../components/AppButton';
 import { NavigationActions } from 'react-navigation'; //NavigationActions sirve para cambiar de ruta básicamente
@@ -9,12 +9,18 @@ import facebookConfig from '../utils/facebook';
 import googleConfig from '../utils/google';
 import * as Facebook from 'expo-facebook';
 import { Google } from 'expo';
-import addDataToDB from '../utils/addDataToDB';
+import controller from '../utils/controller';
+import t from 'tcomb-form-native';
+const Form = t.form.Form;
+import FormValidation from '../utils/validation';
+import { SocialIcon, Card, Button, Icon } from 'react-native-elements'
 
 export default class Start extends Component {
+
     static navigationOptions = {
         title: 'Khacer! App'
     }
+
     login() {
         const navigateAction = NavigationActions.navigate({
             routeName: 'Login'
@@ -29,14 +35,17 @@ export default class Start extends Component {
         this.props.navigation.dispatch(navigateAction);
     }
 
-    async facebook(){
-        const {type, token} = await Facebook.logInWithReadPermissionsAsync(
+    async facebook() {
+        const { type, token } = await Facebook.logInWithReadPermissionsAsync(
             facebookConfig.config.application_id,
-            {permissions: facebookConfig.config.permissions}
-         )
-        if(type === 'success') {
+            { permissions: facebookConfig.config.permissions }
+        )
+        if (type === 'success') {
             const credentials = firebase.auth.FacebookAuthProvider.credential(token);
             firebase.auth().signInWithCredential(credentials)
+                .then((usr) => {
+                    controller.registerUser('facebook', usr)
+                })
                 .catch(error => {
                     Toast.showWithGravity(error.message, Toast.LONG, Toast.BOTTOM);
                 })
@@ -50,9 +59,11 @@ export default class Start extends Component {
     async google() {
         await Google.logInAsync(googleConfig.config)
             .then((result) => {
-                addDataToDB(result)
                 const credentials = firebase.auth.GoogleAuthProvider.credential(null, result.accessToken);
                 firebase.auth().signInWithCredential(credentials)
+                    .then((usr) => {
+                        controller.registerUser('google', usr);
+                    })
                     .catch(error => {
                         Toast.showWithGravity(error.message, Toast.LONG, Toast.BOTTOM);
                     })
@@ -62,41 +73,33 @@ export default class Start extends Component {
             })
 
     }
+
     render() {
-        return(
-            <BackGroundImage source={require('../../assets/images/login-bg.jpg')} >
-                <View style={{justifyContent: 'center', flex: 1}}>
-                    <AppButton
-                        bgColor="rgba(111, 38, 74, 0.7)"
-                        title="Entrar"
-                        action={this.login.bind(this)}
-                        iconName="sign-in"
-                        iconSize={30}
-                        iconColor="#fff"
+        return (
+            <BackGroundImage source={require('../../assets/images/salchicha.jpg')}>
+                <View style={{ height: '100%', justifyContent:'flex-end'}}>
+                    <SocialIcon
+                        title='Continua con Facebook'
+                        type='facebook'
+                        button
+                        onPress={this.facebook.bind(this)}
                     />
-                    <AppButton
-                        bgColor="rgba(200, 200, 50, 0.7)"
-                        title="Regístrarme"
-                        action={this.register.bind(this)}
-                        iconName="user-plus"
-                        iconSize={30}
-                        iconColor="#fff"
+                    <SocialIcon
+                        title='Continua con Google'
+                        button
+                        type='google-plus-official'
+                        onPress={this.google.bind(this)}
                     />
-                     <AppButton
-                        bgColor="rgba(67, 67, 146, 0.7)"
-                        title="Facebook"
-                        action={this.facebook.bind(this)}
-                        iconName="facebook"
-                        iconSize={30}
-                        iconColor="#fff"
+                    <SocialIcon
+                        title='Regístrate'
+                        button
+                        onPress={this.register.bind(this)}
+                        style={{ backgroundColor: 'rgba( 250, 232, 50, 0.9)' }}
                     />
-                    <AppButton
-                        bgColor="rgba(67, 67, 146, 0.7)"
-                        title="Google"
-                        action={this.google.bind(this)}
-                        iconName="google"
-                        iconSize={30}
-                        iconColor="#fff"
+                    <Button
+                        title="¿ya tienes cuenta? Inicia sesión"
+                        type="clear"
+                        onPress={this.login.bind(this)}
                     />
                 </View>
             </BackGroundImage>

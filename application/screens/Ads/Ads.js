@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import BackgroundImage from '../../components/BackgroundImage';
 import PreLoader from '../../components/PreLoader';
-import {StyleSheet, FlatList} from 'react-native';
+import {StyleSheet, FlatList,AsyncStorage} from 'react-native';
 import {ListItem, SearchBar} from 'react-native-elements';
 import * as firebase from 'firebase';
 import {NavigationActions} from 'react-navigation';
@@ -34,6 +34,7 @@ export default class Ads extends Component {
         }
 
         this._loadFirebaseAds();
+        console.log(AsyncStorage.getItem('userID'))
     }
 
 

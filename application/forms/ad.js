@@ -5,6 +5,7 @@ import sliderTemplate from './templates/slider';
 
 export const Ad = t.struct({
     name: t.String,
+    town: t.String,
     address: t.String,
     capacity: t.Number,
     isEvent: t.Boolean,
@@ -17,6 +18,10 @@ export const options = {
         name: {
             label: 'Nombre (*)',
             placeholder:'Nombre'
+        },
+        town: {
+            label: 'Localidad (*)',
+            placeholder: 'Localidad'
         },
         address:{
             label: 'Dirección (*)',

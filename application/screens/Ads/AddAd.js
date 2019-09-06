@@ -17,6 +17,7 @@ export default class AddAd extends Component {
         this.state = {
             ad: {
                 name: '',
+                town: '',
                 address: '',
                 capacity: 0,
                 description: '',

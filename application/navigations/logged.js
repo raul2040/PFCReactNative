@@ -2,13 +2,14 @@ import React from 'react';
 import AdScreen from '../screens/Ads/Ads';
 import AddAdScreen from '../screens/Ads/AddAd';
 import LogoutScreen from '../screens/Logout';
-import {DrawerNavigator, StackNavigator} from 'react-navigation';
+import { DrawerNavigator, StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DetailAd from '../screens/Ads/DetailAd';
 import EditAdScreen from '../screens/Ads/EditAd';
 import ProfileScreen from '../screens/Profile';
 import ReviewAds from '../screens/Ads/ReviewAd';
 import RelevantAds from '../screens/Ads/RelevantAds';
+import Calendar from '../screens/Calendar';
 
 const navigationOptions = {
     navigationOptions: {
@@ -16,10 +17,10 @@ const navigationOptions = {
             backgroundcolor: 'rgba(128, 35, 60, 1)',
         },
         headerTitleStyle: {
-            textAlign:'center',
+            textAlign: 'center',
             alignSelf: 'center',
             fontSize: 20,
-            color:'black',
+            color: 'black',
             fontWeight: 'bold'
         }
     }
@@ -27,50 +28,50 @@ const navigationOptions = {
 
 const leftIcon = (navigation, icon) => <Icon
     name={icon}
-    style={{marginLeft:20}}
+    style={{ marginLeft: 20 }}
     size={20}
     color='black'
-    onPress={() => {navigation.navigate('DrawerOpen')}} 
+    onPress={() => { navigation.navigate('DrawerOpen') }}
 />;
 
 
 const rightIcon = (navigation, icon) => <Icon
     name={icon}
-    style={{marginLeft:20}}
+    style={{ marginLeft: 20 }}
     size={30}
     color='black'
-    onPress={() => {navigation.navigate('ListAds')}} 
+    onPress={() => { navigation.navigate('ListAds') }}
 />;
 
 const adsScreenStack = StackNavigator(
     {
         ListAds: {
             screen: AdScreen,
-            navigationOptions: ({navigation}) => ({
-                title:'Anuncios',
-                drawerIcon: ({tintColor}) => (<Icon name="home" size={24} style={{color: tintColor}}/>),
+            navigationOptions: ({ navigation }) => ({
+                title: 'Anuncios',
+                drawerIcon: ({ tintColor }) => (<Icon name="home" size={24} style={{ color: tintColor }} />),
                 headerLeft: leftIcon(navigation, 'bars')
             })
         },
         ReviewAds: {
             screen: ReviewAds,
-            navigationOptions: ({navigation}) => ({
-                title:'Valoraciones',
+            navigationOptions: ({ navigation }) => ({
+                title: 'Valoraciones',
                 headerRight: rightIcon(navigation, 'home'),
                 headerLeft: leftIcon(navigation, 'bars')
             })
         },
         AddAds: {
             screen: AddAdScreen,
-            navigationOptions:({navigation}) => ({
-                title:'Añadir Anuncio',
+            navigationOptions: ({ navigation }) => ({
+                title: 'Añadir Anuncio',
                 headerRight: rightIcon(navigation, 'home'),
                 headerLeft: leftIcon(navigation, 'bars')
             })
         },
         DetailAd: {
             screen: DetailAd,
-            navigationOptions: ({navigation}) => ({
+            navigationOptions: ({ navigation }) => ({
                 title: 'Detalle del Anuncio',
                 headerRight: rightIcon(navigation, 'home'),
                 headerLeft: leftIcon(navigation, 'bars')
@@ -78,13 +79,13 @@ const adsScreenStack = StackNavigator(
         },
         EditAd: {
             screen: EditAdScreen,
-            navigationOptions: ({navigation}) => ({
+            navigationOptions: ({ navigation }) => ({
                 title: 'Editar Anuncio',
                 headerRight: rightIcon(navigation, 'home')
             })
         }
     },
-    navigationOptions 
+    navigationOptions
 );
 
 const profileScreenStack = StackNavigator(
@@ -93,7 +94,7 @@ const profileScreenStack = StackNavigator(
             screen: ProfileScreen,
             navigationOptions: ({ navigation }) => ({
                 title: "Perfil",
-                drawerIcon: ({ tintColor }) => (<Icon name="user" size={24} style={{color :tintColor}}/>),
+                drawerIcon: ({ tintColor }) => (<Icon name="user" size={24} style={{ color: tintColor }} />),
                 headerLeft: leftIcon(navigation, 'bars'),
                 headerRight: rightIcon(navigation, 'home')
             })
@@ -106,11 +107,11 @@ const logoutScreenStaack = StackNavigator(
     {
         logoutScreen: {
             screen: LogoutScreen,
-            navigationOptions: ({navigation}) => ({
+            navigationOptions: ({ navigation }) => ({
                 title: 'Cerrar sesión',
-                drawerIcon: ({tintColor}) => (<Icon name="sign-out" size={24} style={{color: tintColor}}/>),
+                drawerIcon: ({ tintColor }) => (<Icon name="sign-out" size={24} style={{ color: tintColor }} />),
             })
-            
+
         }
     }
 );
@@ -120,9 +121,9 @@ const reviewsAdScreenStack = StackNavigator(
     {
         ReviewAds: {
             screen: ReviewAds,
-            navigationOptions: ({navigation}) => ({
+            navigationOptions: ({ navigation }) => ({
                 title: 'Valoraciones',
-                drawerIcon: ({tintColor}) => (<Icon name="comments" size={24} style={{color: tintColor}}/>),
+                drawerIcon: ({ tintColor }) => (<Icon name="comments" size={24} style={{ color: tintColor }} />),
                 headerLeft: leftIcon(navigation, 'bars'),
                 headerRight: rightIcon(navigation, 'home')
             })
@@ -131,13 +132,13 @@ const reviewsAdScreenStack = StackNavigator(
     navigationOptions
 );
 
-const mostRelevantsAdsStack = StackNavigator (
+const mostRelevantsAdsStack = StackNavigator(
     {
         RelevantAds: {
             screen: RelevantAds,
-            navigationOptions: ({navigation}) => ({
+            navigationOptions: ({ navigation }) => ({
                 title: 'Anuncios más relevantes',
-                drawerIcon: ({tintColor}) => (<Icon name="exclamation" size={24} style={{color: tintColor}}/>),
+                drawerIcon: ({ tintColor }) => (<Icon name="exclamation" size={24} style={{ color: tintColor }} />),
                 headerLeft: leftIcon(navigation, 'bars'),
                 headerRight: rightIcon(navigation, 'home')
             })
@@ -147,10 +148,41 @@ const mostRelevantsAdsStack = StackNavigator (
 )
 
 
+const AddAdsStack = StackNavigator(
+    {
+        addAd: {
+            screen: AddAdScreen,
+            navigationOptions: ({ navigation }) => ({
+                title: 'Añadir Anuncio',
+                drawerIcon: ({ tintColor }) => (<Icon name="exclamation" size={24} style={{ color: tintColor }} />),
+                headerRight: rightIcon(navigation, 'home'),
+                headerLeft: leftIcon(navigation, 'bars')
+            })
+        }
+    },
+    navigationOptions
+)
+
+const AgendaStack = StackNavigator(
+    {
+        Agenda: {
+            screen: Calendar,
+            navigationOptions:({ navigation}) => ({
+                title:'Calendario',
+                drawerIcon: ({ tintColor }) => (<Icon name="exclamation" size={24} style={{ color: tintColor }} />),
+                headerRight: rightIcon(navigation, 'home'),
+                headerLeft: leftIcon(navigation, 'bars')
+            })
+        }
+    }
+)
+
+
+
 export default DrawerNavigator(
     {
-        AdScreen:{
-            screen:adsScreenStack
+        AdScreen: {
+            screen: adsScreenStack
         },
         ReviewsAdScreen: {
             screen: reviewsAdScreenStack
@@ -158,21 +190,27 @@ export default DrawerNavigator(
         mostRelevantsAds: {
             screen: mostRelevantsAdsStack
         },
+        adAdd: {
+            screen: AddAdsStack
+        },
         ProfileScreen: {
             screen: profileScreenStack
         },
+        calendarScreen: {
+            screen: AgendaStack
+        },
         LogoutScreen: {
             screen: logoutScreenStaack
-        }
+        },
     },
     {
         drawerBackgroundColor: 'rgba(128, 35, 60, 0.7)',
         contentOptions: {
             activeTintColor: 'white',
             activeBackgroundColor: 'transparent',
-            inactiveTintColor:'white',
+            inactiveTintColor: 'white',
             itemsContaainerStyle: {
-                marginVertical:0,
+                marginVertical: 0,
             }
         }
 

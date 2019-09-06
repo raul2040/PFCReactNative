@@ -29,6 +29,17 @@ export default class Ad extends Component {
                 />
             )
 
+        const subscribeBtn = (ad.isEvent && !this.props.userIsSub)?
+        (<AppButton
+            bgColor='rgba(80, 38, 200, 0.8)'
+            title='¡Subscribete a este evento!'
+            action={this.props.subscribeUser}
+            iconName='pencil'
+            iconSize={30}
+            iconColor='#fff'
+
+        />): (<Text>{this.props.userIsSub ? "Ya estas subscrito a este evento": ''}</Text>)
+
         return (
             <Card
                 title={ad.name}
@@ -41,6 +52,7 @@ export default class Ad extends Component {
                 </Text>
                 <View>
                     {buttons}
+                    {subscribeBtn}
                     <AppButton
                         bgColor='rgba(28, 25, 21, 0.7)'
                         title='Volver'

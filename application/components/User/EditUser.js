@@ -5,59 +5,66 @@ import { View, ScrollView } from 'react-native';
 import AppButton from '../../components/AppButton';
 import sliderTemplate from '../../forms/templates/slider';
 const Form = t.form.Form;
-import CategoryDropDown from '../../components/Ads/CategoryDropDown';
 
-export const filter = t.struct({
-    ratingCounter: t.Number,
-    date: t.Date,
+export const editUsr = t.struct({
+    Age: t.Number,
+    musicGenre: t.String,
+    description: t.String,
     town: t.String
 })
 
 export const options = {
     fields: {
-        ratingCounter: {
-            label: 'Puntuación',
-            help: 'indique la puntuación',
+        Age: {
+            label: 'Edad',
+            help: 'indique su edad',
             config: {
                 step: 1,
                 min:0,
-                max:10,
+                max:99,
                 value:1
             },
             template: sliderTemplate
         },
-        date: {
-            mode: 'date',
-            label: "Seleccione una fecha",
+        musicGenre: {
+            label: "Comparta con el mundo sus generos músicales",
+        },
+        description: {
+            label: 'Introduzca una breve descripción.'
         },
         town: {
-            label: 'Localidad en la que desea buscar'
+            label: 'Localidad/Población'
         }
     }
 }
 
-export default class SearchAds extends Component {
+export default class EditUser extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            ads: this.props.ads,
+            user: {},
             isVisible: false,
             filters: {
-                ratingCounter:0,
+                Age:0,
+                musicGenre: '',
+                description: '',
+                town:''
             },
             isFiltered:false
         }
     }
 
     showOverlay = () => {
+        const user = this.props.user;
         this.setState({
-            isVisible: true
+            isVisible: true,
+            user
         })
     };
 
-    onChange = (filters) => {
+    onChange = (user) => {
         this.setState({
-            filters
+            user
         })
     };
 
@@ -69,43 +76,22 @@ export default class SearchAds extends Component {
         });
     };
 
-    filter = () => {
-        const filters = Object.keys(this.state.filters);
-        if(this.state.filters.ratingCounter === 0) filters.splice(filters.indexOf('ratingCounter'), 1)
-        const filteredAds = [...this.props.ads];
-        this.props.ads.forEach((ad) => {
-            for(let filter of filters) {
-                if (ad[filter] != this.state.filters[filter]){
-                    filteredAds.splice(filteredAds.indexOf(ad), 1)  
-                    break;
-                } 
-            }
+    save = () => {
+        const user = {...this.state.user};
+        this.props.saveChanges(user);
+        this.setState({
+            isVisible:false
         });
-        this.props.onAdsFiltered(filteredAds);
-        this.setState({
-            isVisible: false,
-            isFiltered: true
-        })
-    };
-
-    cleanFilters = () =>  {
-        this.setState({
-            filters: {
-                ratingCounter:0,
-            },
-            isFiltered: false
-        })
-        this.props.reloadAds();
     };
 
     render() {
-        const { filters } = this.state;
+        const { user } = this.state;
         if (!this.state.isVisible && !this.state.isFiltered) {
             return (
                 <View>
                     <AppButton
                         bgColor='rgba(255, 38, 74, 0.9)'
-                        title='Filtrar'
+                        title='Editar Perfil'
                         action={this.showOverlay.bind(this)}
                         iconName='plus'
                         iconSize={30}
@@ -114,22 +100,6 @@ export default class SearchAds extends Component {
                 </View>
             )
         }
-
-        if(!this.state.isVisible && this.state.isFiltered) {
-            return (
-                <View>
-                    <AppButton
-                        bgColor='rgba(255, 38, 74, 0.9)'
-                        title='Limpiar Filtros'
-                        action={this.cleanFilters.bind(this)}
-                        iconName='trash'
-                        iconSize={30}
-                        iconColor='#fff'
-                    />
-                </View>
-            )
-        }
-
         if (this.state.isVisible) {
             return (
                 <Overlay
@@ -139,18 +109,15 @@ export default class SearchAds extends Component {
                     <ScrollView>
                         <Form
                             ref="form"
-                            type={filter}
+                            type={editUsr}
                             options={options}
-                            value={filters}
+                            value={user}
                             onChange={(v) => this.onChange(v)}
-                        />
-                        <CategoryDropDown 
-                            onChangeCategory={this.onChangeCategory}
                         />
                         <AppButton
                             bgColor='rgba(255, 38, 74, 0.9)'
-                            title='Filtrar'
-                            action={this.filter.bind(this)}
+                            title='Guardar Cambios'
+                            action={this.save.bind(this)}
                             iconName='plus'
                             iconSize={30}
                             iconColor='#fff'

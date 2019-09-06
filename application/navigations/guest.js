@@ -20,7 +20,7 @@ export default StackNavigator(
             initialRouteName:  'Start',
             navigationOptions:{
                 headerStyle:{
-                    backgroundColor: 'rgb(135, 215, F9)',
+                    backgroundColor: 'rgb( 250, 130, 43 )',
                 },
                 headerTitleStyle: {
                     textAlign: 'center',

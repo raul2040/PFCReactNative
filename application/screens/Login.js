@@ -55,7 +55,7 @@ export default class Login extends Component{
     }
     render() {
         return (
-            <BackgroundImage source={require('../../assets/images/login-bg.jpg')}>
+            <BackgroundImage source={require('../../assets/images/salchicha.jpg')}>
                 <View>
                     <Card  title="Iniciar sesión">
                         <Form 
