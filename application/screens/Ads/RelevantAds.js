@@ -26,7 +26,8 @@ export default class RelevantAds extends Component{
                         name: row.val().name,
                         address: row.val().address,
                         capacity: row.val().capacity,
-                        description: row.val().description
+                        description: row.val().description,
+                        image: row.val().image
                     })
                 }
             })

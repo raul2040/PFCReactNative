@@ -21,7 +21,7 @@ export default class ReviewAd extends Component {
     render() {
         const {adId} = this.state;
         return(
-            <BackgroundImage source={require('../../../assets/images/bg-auth.jpg')}>
+            <BackgroundImage source={require('../../../assets/images/salchicha.jpg')}>
                 <View style={styles.container}>
                     <AdDropDown
                         onChangeAd={(id) => this.updateAdId(id)}

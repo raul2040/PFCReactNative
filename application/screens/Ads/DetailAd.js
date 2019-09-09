@@ -21,7 +21,7 @@ export default class DetailAd extends Component {
     editAd() {
         const navigateActions = NavigationActions.navigate({
             routeName: 'EditAd',
-            params: {ad: this.state.ad}
+            params: {ad: this.state.ad, AdsManagement: false}
         });
         this.props.navigation.dispatch(navigateActions);
     };
@@ -56,16 +56,23 @@ export default class DetailAd extends Component {
         this.refsUser.update(updatedUser)
     };
 
+    detailUser(user) {
+        const navigateActions = NavigationActions.navigate({
+            routeName: 'ProfileScreen', params: {user}
+        });
+        this.props.navigation.dispatch(navigateActions);
+    };
+
     render() {
         const { ad } = this.state;
         return (
-            <BackgroundImage source={require('../../../assets/images/bg-auth.jpg')} >
+            <BackgroundImage source={require('../../../assets/images/salchicha.jpg')} >
                 <ScrollView>
                     <Ad
                         goHome={this.goHome.bind(this)}
                         editAd={this.editAd.bind(this)}
                         ad={ad}
-                        editable={true}
+                        editable={false}
                         userIsSub={this.state.userIsSub}
                         subscribeUser={this.subscribeUser.bind(this)}
                     />
@@ -76,6 +83,7 @@ export default class DetailAd extends Component {
                     
                     <CommentList 
                         adId={ad.id}
+                        detailUser={this.detailUser.bind(this)}
                     />
 
                 </ScrollView>

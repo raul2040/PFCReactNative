@@ -2,7 +2,7 @@ import React from 'react';
 import AdScreen from '../screens/Ads/Ads';
 import AddAdScreen from '../screens/Ads/AddAd';
 import LogoutScreen from '../screens/Logout';
-import { DrawerNavigator, StackNavigator } from 'react-navigation';
+import { DrawerNavigator, StackNavigator} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DetailAd from '../screens/Ads/DetailAd';
 import EditAdScreen from '../screens/Ads/EditAd';
@@ -10,6 +10,10 @@ import ProfileScreen from '../screens/Profile';
 import ReviewAds from '../screens/Ads/ReviewAd';
 import RelevantAds from '../screens/Ads/RelevantAds';
 import Calendar from '../screens/Calendar';
+import Profile from '../screens/Companies/Profile';
+import AdsManagement from '../screens/Ads/AdsManagement';
+import DetailAdCompany from '../screens/Ads/DetailAdCompany';
+import Friends from '../screens/Friends';
 
 const navigationOptions = {
     navigationOptions: {
@@ -77,10 +81,26 @@ const adsScreenStack = StackNavigator(
                 headerLeft: leftIcon(navigation, 'bars')
             })
         },
+        DetailAdCompany: {
+            screen: DetailAdCompany,
+            navigationOptions: ({ navigation }) => ({
+                title: 'Detalle del Anuncio',
+                headerRight: rightIcon(navigation, 'home'),
+                headerLeft: leftIcon(navigation, 'bars')
+            })
+        },
         EditAd: {
             screen: EditAdScreen,
             navigationOptions: ({ navigation }) => ({
                 title: 'Editar Anuncio',
+                headerRight: rightIcon(navigation, 'home')
+            })
+        },
+        ProfileScreen: {
+            screen: ProfileScreen,
+            navigationOptions: ({ navigation }) => ({
+                title: "Perfil",
+                headerLeft: leftIcon(navigation, 'bars'),
                 headerRight: rightIcon(navigation, 'home')
             })
         }
@@ -92,6 +112,21 @@ const profileScreenStack = StackNavigator(
     {
         ProfileScreen: {
             screen: ProfileScreen,
+            navigationOptions: ({ navigation }) => ({
+                title: "Perfil",
+                drawerIcon: ({ tintColor }) => (<Icon name="user" size={24} style={{ color: tintColor }} />),
+                headerLeft: leftIcon(navigation, 'bars'),
+                headerRight: rightIcon(navigation, 'home')
+            })
+        }
+    },
+    navigationOptions
+);
+
+const companyProfileScreenStack = StackNavigator(
+    {
+        ProfileScreen: {
+            screen: Profile,
             navigationOptions: ({ navigation }) => ({
                 title: "Perfil",
                 drawerIcon: ({ tintColor }) => (<Icon name="user" size={24} style={{ color: tintColor }} />),
@@ -169,7 +204,35 @@ const AgendaStack = StackNavigator(
             screen: Calendar,
             navigationOptions:({ navigation}) => ({
                 title:'Calendario',
-                drawerIcon: ({ tintColor }) => (<Icon name="exclamation" size={24} style={{ color: tintColor }} />),
+                drawerIcon: ({ tintColor }) => (<Icon name="calendar" size={24} style={{ color: tintColor }} />),
+                headerRight: rightIcon(navigation, 'home'),
+                headerLeft: leftIcon(navigation, 'bars')
+            })
+        }
+    }
+)
+
+const AdsManagementStack = StackNavigator(
+    {
+        AdsManagement: {
+            screen: AdsManagement,
+            navigationOptions:({ navigation}) => ({
+                title:'Gestiona tus anuncios',
+                drawerIcon: ({ tintColor }) => (<Icon name="edit" size={24} style={{ color: tintColor }} />),
+                headerRight: rightIcon(navigation, 'home'),
+                headerLeft: leftIcon(navigation, 'bars')
+            })
+        }
+    }
+)
+
+const FriendsStack = StackNavigator(
+    {
+        Friends: {
+            screen: Friends,
+            navigationOptions:({ navigation}) => ({
+                title:'Amistades',
+                drawerIcon: ({ tintColor }) => (<Icon name="users" size={24} style={{ color: tintColor }} />),
                 headerRight: rightIcon(navigation, 'home'),
                 headerLeft: leftIcon(navigation, 'bars')
             })
@@ -179,7 +242,7 @@ const AgendaStack = StackNavigator(
 
 
 
-export default DrawerNavigator(
+ export const UserNavigation =  DrawerNavigator(
     {
         AdScreen: {
             screen: adsScreenStack
@@ -190,11 +253,11 @@ export default DrawerNavigator(
         mostRelevantsAds: {
             screen: mostRelevantsAdsStack
         },
-        adAdd: {
-            screen: AddAdsStack
-        },
         ProfileScreen: {
             screen: profileScreenStack
+        },
+        FriendsScreen: {
+            screen: FriendsStack
         },
         calendarScreen: {
             screen: AgendaStack
@@ -215,5 +278,36 @@ export default DrawerNavigator(
         }
 
     }
+)
 
+export const CompanyNavigation =  DrawerNavigator(
+    {
+        AdScreen: {
+            screen: adsScreenStack
+        },
+        adAdd: {
+            screen: AddAdsStack
+        },
+        AdsManagementStack: {
+            screen: AdsManagementStack
+        },
+        ProfileScreen: {
+            screen: companyProfileScreenStack
+        },
+        LogoutScreen: {
+            screen: logoutScreenStaack
+        },
+    },
+    {
+        drawerBackgroundColor: 'rgba(47, 138, 236, 0.7)',
+        contentOptions: {
+            activeTintColor: 'white',
+            activeBackgroundColor: 'transparent',
+            inactiveTintColor: 'white',
+            itemsContaainerStyle: {
+                marginVertical: 0,
+            }
+        }
+
+    }
 )

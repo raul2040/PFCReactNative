@@ -1,15 +1,16 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PreLoader from '../PreLoader';
-import {StyleSheet, FlatList, View} from 'react-native';
-import {Card, Divider, Text} from 'react-native-elements';
+import { StyleSheet, FlatList, View } from 'react-native';
+import { Card, Divider, Text } from 'react-native-elements';
 import BackgroundImage from '../BackgroundImage';
 import * as firebase from 'firebase';
 import CommentEmpty from './CommentEmpty';
 import Comment from './Comment';
+import User from '../../components/User/User';
 
 export default class CommentList extends Component {
 
-    constructor(props)  {
+    constructor(props) {
         super(props);
         this.state = {
             comments: [],
@@ -27,14 +28,16 @@ export default class CommentList extends Component {
         }
     }
 
-    _loadComments (adId) {
+    _loadComments(adId) {
         firebase.database().ref(`comments/${adId}`).on('value', snapshot => {
             let comments = [];
             snapshot.forEach(row => {
                 comments.push({
                     id: row.key,
                     rating: row.val().rating,
-                    comment: row.val().comment
+                    comment: row.val().comment,
+                    userID: row.val().userID,
+
                 })
             });
             this.setState({
@@ -45,21 +48,21 @@ export default class CommentList extends Component {
     }
 
     render() {
-        const {comments, loaded} = this.state;
+        const { comments, loaded } = this.state;
 
-        if( !loaded ) {
-            return(<PreLoader/>)
+        if (!loaded) {
+            return (<PreLoader />)
         }
 
-        if( ! comments.length) {
+        if (!comments.length) {
             return (
-                <CommentEmpty/>
+                <CommentEmpty />
             )
         }
         return (
             <View style={styles.container}>
                 <Text style={styles.title}>Opiniones</Text>
-                <Divider style={styles.divider}/>
+                <Divider style={styles.divider} />
                 <Card>
                     <FlatList
                         data={comments}
@@ -71,8 +74,11 @@ export default class CommentList extends Component {
         )
     }
     renderComment(comment) {
-        return(
-            <Comment comment={comment}/>
+        return (
+            <View>
+                <Comment comment={comment} />
+                <User userID={comment.userID}  detailUser={this.props.detailUser}/>
+            </View>
         )
     };
 }
@@ -87,7 +93,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 22,
-        color:'white',
+        color: 'white',
         textAlign: 'center',
         backgroundColor: 'rgba(255, 38, 74, 0.9)'
     },

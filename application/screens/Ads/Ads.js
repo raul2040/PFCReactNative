@@ -6,7 +6,6 @@ import {ListItem, SearchBar} from 'react-native-elements';
 import * as firebase from 'firebase';
 import {NavigationActions} from 'react-navigation';
 import AdsEmpty from '../../components/Ads/AdEmpty';
-import AdAddButton from '../../components/Ads/AdAddButton';
 import SearchAds from '../../components/Ads/SearchAd';
 //import { timingSafeEqual } from 'crypto';
 
@@ -17,14 +16,15 @@ export default class Ads extends Component {
             ads: [],
             loaded: false,
             ads_logo: require('../../../assets/images/Logo.png'),
-            search:''
+            search:'',
+            isCompany: false
         };
 
         this.refsAds = firebase.database().ref().child('ads'); // ads en terminos SQL vendría a ser la tabla de anuncios.
     }
 
     
-    componentDidMount() {
+    async componentDidMount() {
         const {search} = this.state;
         if( !search ) {
             this.refsAds = this.refsAds = firebase.database().ref().child('ads');
@@ -34,7 +34,10 @@ export default class Ads extends Component {
         }
 
         this._loadFirebaseAds();
-        console.log(AsyncStorage.getItem('userID'))
+        const isCompany = await this.isCompany();
+        this.setState({
+            isCompany
+        })
     }
 
 
@@ -53,18 +56,9 @@ export default class Ads extends Component {
         })
     }
 
-    addAd() {
-        const navigateAction = NavigationActions.navigate({
-            routeName: 'AddAds'
-        });
-        this.props.navigation.dispatch(navigateAction);
-    }
-
     adDetail(ad) {
-        const navigateAction = NavigationActions.navigate({
-            routeName: 'DetailAd',
-            params: {ad}
-        });
+        navigation = this.state.isCompany ? {routeName: 'DetailAdCompany',params: {ad}} : {routeName: 'DetailAd',params: {ad}}
+        const navigateAction = NavigationActions.navigate(navigation);
         this.props.navigation.dispatch(navigateAction);
     }
 
@@ -75,7 +69,7 @@ export default class Ads extends Component {
                 titleStyle={styles.title}
                 roundAvatar
                 title={`${ad.name} (Capacidad: ${ad.capacity})`}
-                leftAvatar={{source:this.state.ads_logo}}
+                leftAvatar={{source: { uri: ad.image}}}
                 onPress={() => {this.adDetail(ad)}}
                 rightIcon={{name: 'arrow-right', type:'font-awesome', style: styles.listIconStyle}}
             />
@@ -118,6 +112,11 @@ export default class Ads extends Component {
         this.setState({ads})
     };
 
+    async isCompany() {
+        const isCompany =  await (AsyncStorage.getItem('isCompany'));
+        return JSON.parse(isCompany);
+    }
+
     render(){
         const {loaded, ads} = this.state
         const searchBar = (
@@ -136,15 +135,14 @@ export default class Ads extends Component {
         };
         if (!ads.length) {
             return(
-                <BackgroundImage source={require('../../../assets/images/bg-auth.jpg')}>
+                <BackgroundImage source={require('../../../assets/images/salchicha.jpg')}>
                     {searchBar}
                     <AdsEmpty text={'No hay anuncios disponibles'}/>
-                    <AdAddButton addAd={this.addAd.bind(this)}/>
                 </BackgroundImage>
             )
         }
         return(
-            <BackgroundImage source={require('../../../assets/images/bg-auth.jpg')}>
+            <BackgroundImage source={require('../../../assets/images/salchicha.jpg')}>
                 {searchBar}
                 <FlatList 
                     data={ads}
@@ -162,6 +160,7 @@ export default class Ads extends Component {
     }
 
 }
+
 
 const styles = StyleSheet.create({
     title: {

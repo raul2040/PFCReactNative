@@ -4,31 +4,19 @@ import { Overlay } from 'react-native-elements';
 import { View, ScrollView } from 'react-native';
 import AppButton from '../../components/AppButton';
 import sliderTemplate from '../../forms/templates/slider';
-import ImagePicker from '../../components/ImagePicker';
 const Form = t.form.Form;
+import ImagePicker from '../../components/ImagePicker';
 
-export const editUsr = t.struct({
-    Age: t.Number,
-    musicGenre: t.String,
+export const companyStruct = t.struct({
+    direction: t.String,
     description: t.String,
     town: t.String
 })
 
 export const options = {
     fields: {
-        Age: {
-            label: 'Edad',
-            help: 'indique su edad',
-            config: {
-                step: 1,
-                min:0,
-                max:99,
-                value:1
-            },
-            template: sliderTemplate
-        },
-        musicGenre: {
-            label: "Comparta con el mundo sus generos músicales",
+        direction: {
+            label: "Dirección de su empresa",
         },
         description: {
             label: 'Introduzca una breve descripción.'
@@ -39,16 +27,14 @@ export const options = {
     }
 }
 
-export default class EditUser extends Component {
+export class EditCompany extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: {
-            },
+            company: {},
             isVisible: false,
             filters: {
-                Age:0,
-                musicGenre: '',
+                direction: '',
                 description: '',
                 town:''
             },
@@ -57,16 +43,16 @@ export default class EditUser extends Component {
     }
 
     showOverlay = () => {
-        const user = this.props.user;
+        const company = this.props.company;
         this.setState({
             isVisible: true,
-            user
+            company
         })
     };
 
-    onChange = (user) => {
+    onChange = (company) => {
         this.setState({
-            user
+            company
         })
     };
 
@@ -79,24 +65,23 @@ export default class EditUser extends Component {
     };
 
     save = () => {
-        const user = {...this.state.user};
-        this.props.saveChanges(user);
+        const company = {...this.state.company};
+        this.props.saveChanges(company);
         this.setState({
             isVisible:false
         });
     };
 
     refreshProfileImage (img) {
-        const user = {...this.state.user}
-        user['profileImage'] = img
+        const company = {...this.state.company}
+        company['profileImage'] = img
         this.setState({
-            user
+            company
         })
-        console.log(this.state.user)
     };
 
     render() {
-        const { user } = this.state;
+        const { company } = this.state;
         if (!this.state.isVisible && !this.state.isFiltered) {
             return (
                 <View>
@@ -120,9 +105,9 @@ export default class EditUser extends Component {
                     <ScrollView>
                         <Form
                             ref="form"
-                            type={editUsr}
+                            type={companyStruct}
                             options={options}
-                            value={user}
+                            value={company}
                             onChange={(v) => this.onChange(v)}
                         />
                         <ImagePicker

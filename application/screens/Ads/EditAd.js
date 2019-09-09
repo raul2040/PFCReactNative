@@ -1,18 +1,18 @@
-import  React, {Component} from 'react';
+import React, { Component } from 'react';
 import BackgroundImage from '../../components/BackgroundImage';
-import {View, StyleSheet} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import AppButton from '../../components/AppButton';
 import * as firebase from 'firebase';
-import  {options, Ad} from '../../forms/ad';
+import { options, Ad } from '../../forms/ad';
 import t from 'tcomb-form-native';
-import {Card} from 'react-native-elements';
+import { Card } from 'react-native-elements';
 const Form = t.form.Form;
-import {NavigationActions} from 'react-navigation';
+import { NavigationActions } from 'react-navigation';
 
 export default class EditAd extends Component {
     constructor(props) {
         super(props);
-        const {params} = props.navigation.state;
+        const { params } = props.navigation.state;
         this.state = {
             ad: params.ad
         };
@@ -20,34 +20,38 @@ export default class EditAd extends Component {
 
     update() {
         const validate = this.refs.form.getValue();
-        if(validate) {
-            let data =  Object.assign({}, validate);
-            const ref = firebase.database().ref().child(`ads/${this.state.ad.id}`) 
+        const that = this;
+        if (validate) {
+            let data = Object.assign({}, validate);
+            const ref = firebase.database().ref().child(`ads/${this.state.ad.id}`)
             ref.update(data)
                 .then(() => {
-                    const navigateActions = NavigationActions.navigate({
-                        routeName: 'DetailAd',
-                        params: { ad: this.state.ad }
-                    });
+                    const navigationOptions = this.navigateActions();
+                    const navigateActions = NavigationActions.navigate(navigationOptions);
                     this.props.navigation.dispatch(navigateActions);
                 })
         }
     }
 
+    navigateActions() {
+        const navigateActions = this.props.navigation.state.params.AdsManagement ? { routeName: 'AdsManagement' } : { routeName: 'DetailAd', params: { ad: this.state.ad } };
+        return navigateActions;
+    }
+
     onChange(ad) {
-        this.setState({ad});
+        this.setState({ ad });
     }
 
     render() {
         const { ad } = this.state;
         return (
-            <BackgroundImage source={require('../../../assets/images/bg-auth.jpg')}>
+            <BackgroundImage source={require('../../../assets/images/salchicha.jpg')}>
                 <View style={styles.container}>
                     <Card
                         title={'Editar Anuncio'}
                     >
                         <View>
-                            <Form 
+                            <Form
                                 ref="form"
                                 type={Ad}
                                 options={options}
@@ -55,7 +59,7 @@ export default class EditAd extends Component {
                                 onChange={(v) => this.onChange(v)}
                             />
                         </View>
-                        <AppButton 
+                        <AppButton
                             bgColor="rgba(255,38,74,0.9)"
                             title="Actualizar"
                             action={this.update.bind(this)}

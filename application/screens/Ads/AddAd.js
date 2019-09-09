@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import BackgroundImage from '../../components/BackgroundImage';
-import { ScrollView, View,StyleSheet } from 'react-native';
+import { ScrollView, View,StyleSheet, AsyncStorage } from 'react-native';
 import * as firebase from 'firebase';
 import { options, Ad } from '../../forms/ad';
 import t from 'tcomb-form-native';
@@ -9,6 +9,7 @@ const Form = t.form.Form;
 import Toast from 'react-native-simple-toast';
 import AppButton from '../../components/AppButton';
 import CategoryDropDown from '../../components/Ads/CategoryDropDown';
+import ImagePicker from '../../components/ImagePicker';
 
 
 export default class AddAd extends Component {
@@ -46,8 +47,10 @@ export default class AddAd extends Component {
 
 
 
-    save() {
+    async save() {
         const validate = this.refs.form.getValue();
+        let companyID = await AsyncStorage.getItem('companyID');
+        companyID = JSON.parse(companyID);
         if (validate && this.state.categoryId != null) {
             let data = {};
             const ad = Object.assign({}, this.state.ad, {category: this.state.categoryId } )
@@ -55,7 +58,13 @@ export default class AddAd extends Component {
             data[`ads/${key}`] = ad;
             
             firebase.database().ref().update(data)
-                .then(() => {
+                .then(async () => {
+                    await firebase.database().ref().child(`companies/${companyID}`).on('value', snapshot => {
+                        let companyAds = Object.assign(snapshot.val().ads, {
+                            [key] : ""
+                        });
+                        firebase.database().ref().child(`companies/${companyID}/ads`).set(companyAds);
+                    });
                     Toast.showWithGravity('Anuncio dado de alta', Toast.LONG, Toast.BOTTOM);
                     this.props.navigation.navigate('ListAds')
                 })
@@ -86,10 +95,18 @@ export default class AddAd extends Component {
         })
     }
 
+    addImage (img) {
+        const ad = {...this.state.ad}
+        ad['image'] = img
+        this.setState({
+            ad
+        })
+    };
+
     render() {
         const { ad } = this.state;
         return (
-            <BackgroundImage source={require('../../../assets/images/bg-auth.jpg')}>
+            <BackgroundImage source={require('../../../assets/images/salchicha.jpg')}>
                 <ScrollView style={styles.container}>
                     <Card title='Formulario de Anuncios'>
                         <View style={styles.formContainer}>
@@ -103,6 +120,9 @@ export default class AddAd extends Component {
                             <CategoryDropDown
                                 onChangeCategory={this.onChangeCategory.bind(this)}
                                 categoryId={this.state.categoryId}
+                            />
+                            <ImagePicker 
+                                callback={this.addImage.bind(this)}
                             />
                         </View>
                         <AppButton

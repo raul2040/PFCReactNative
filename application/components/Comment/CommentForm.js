@@ -7,7 +7,7 @@ import {Card} from 'react-native-elements';
 import {View} from 'react-native';
 import *   as firebase from 'firebase';
 import Toast from 'react-native-simple-toast';
-
+import {AsyncStorage} from 'react-native';
 
 
 
@@ -23,11 +23,13 @@ export default  class CommentForm extends Component {
         };
     }
 
-    addComment () {
+    async addComment () {
         const validate = this.refs.form.getValue();
         if(validate) {
             let data = {};
             let comment = Object.assign({}, validate);
+            let userID =  await AsyncStorage.getItem('userID');
+            comment['userID'] = JSON.parse(userID);
             let ref = firebase.database().ref().child('comments');
             const key = ref.push().key;
 
@@ -41,7 +43,7 @@ export default  class CommentForm extends Component {
                         comment : {
                             comment: '',
                             rating:  1,
-                            rarity: 1
+                            rarity: 1,
                         }
                     }
                 });

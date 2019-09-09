@@ -5,23 +5,27 @@ import firebaseOptions from './application/utils/firebase';
 firebase.initializeApp(firebaseOptions)
 
 import GuestNavigation from './application/navigations/guest';
-import LoggedNavigation from './application/navigations/logged';
+import {UserNavigation, CompanyNavigation} from './application/navigations/logged';
+import {AsyncStorage} from 'react-native';
 
 export default class App extends Component {
   constructor() {
     super();
     this.state = {
       isLogged: false,
-      loaded: false
+      loaded: false,
+      isCompany: false
     }
   }
 
   async componentDidMount() {
-    await firebase.auth().onAuthStateChanged((user)  => {
+    await firebase.auth().onAuthStateChanged(async (user)  => {
       if(user !== null) {
+        const isCompany = await AsyncStorage.getItem('isCompany');
         this.setState({
           isLogged: true,
-          loaded: true
+          loaded: true,
+          isCompany: JSON.parse(isCompany)
         })
       } else {
           this.setState({
@@ -33,13 +37,15 @@ export default class App extends Component {
   }
 
   render() {
-    const {isLogged, loaded} = this.state;
+    let {isLogged, loaded, isCompany} = this.state;
+    let navigation = isCompany ?  (<CompanyNavigation/>) : (<UserNavigation/>);
     if(!loaded) {
       return (<PreLoader/>)
     }
     if(isLogged) {
-      return (<LoggedNavigation/>)
-    }else {
+      return navigation
+    }
+    else {
       return (
         <GuestNavigation/>
       );

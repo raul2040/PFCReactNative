@@ -11,7 +11,7 @@ export default class Ad extends Component {
             (<AppButton
                 bgColor='rgba(255, 38, 74, 0.8)'
                 title='Editar Anuncio'
-                action={editAd}
+                action={() => editAd(ad)}
                 iconName='pencil'
                 iconSize={30}
                 iconColor='#fff'
@@ -43,7 +43,7 @@ export default class Ad extends Component {
         return (
             <Card
                 title={ad.name}
-                image={require('../../../assets/images/Logo.png')}
+                image={{uri: ad.image}}
             >
                 <AdRating adId={ad.id} />
 

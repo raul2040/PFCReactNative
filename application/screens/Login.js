@@ -1,17 +1,21 @@
-import React, {Component} from 'react';
-import{View} from 'react-native';
-import  BackgroundImage from '../components/BackgroundImage';
+import React, { Component } from 'react';
+import { View, AsyncStorage} from 'react-native';
+import BackgroundImage from '../components/BackgroundImage';
 import AppButton from '../components/AppButton';
 import t from 'tcomb-form-native';
 import FormValidation from '../utils/validation';
-import {Card} from 'react-native-elements';
+import { Card, CheckBox } from 'react-native-elements';
 const Form = t.form.Form;
 import * as firebase from 'firebase';
 import Toast from 'react-native-simple-toast';
+import controller from '../utils/controller';
 
-export default class Login extends Component{
+export default class Login extends Component {
     constructor() {
         super();
+        this.state = {
+            isCompany: false
+        }
         // Definimos el esqueleto del formulario y sus opciones.
         this.user = t.struct({
             email: FormValidation.email,
@@ -33,35 +37,60 @@ export default class Login extends Component{
             }
         };
     }
-    login() {
+    async login() {
         const validate = this.refs.form.getValue(); // Así validamos el formulario
+        const that = this;
         if (validate) {
             firebase.auth().signInWithEmailAndPassword(validate.email, validate.password)
-                .then(() => {
+                .then(async (data) => {
+                    controller.initSession(that.state.isCompany, data.user.uid)
+                    await that.isCompany();
                     Toast.showWithGravity('Bienvenido', Toast.LONG, Toast.BOTTOM) // Le pasamos el mensaje, la duración  y la posición.
                 })
                 .catch((error) => {
                     const errorCode = error.code;
                     const errorMessage = error.message;
-                    if (errorCode ==='auth/wrong-password') {
+                    if (errorCode === 'auth/wrong-password') {
                         Toast.showWithGravity('Password Incorrecto', Toast.LONG, Toast.BOTTOM);
                     }
-                    else{
+                    else {
                         Toast.showWithGravity(errorMessage, Toast.LONG, Toast.BOTTOM);
                     }
                 })
         }
-        
+
     }
+
+    async isCompany() {
+        await AsyncStorage.setItem('isCompany', JSON.stringify(this.state.isCompany));
+    }
+
     render() {
         return (
             <BackgroundImage source={require('../../assets/images/salchicha.jpg')}>
                 <View>
-                    <Card  title="Iniciar sesión">
-                        <Form 
-                            ref="form" 
+                    <Card title="Iniciar sesión">
+                        <Form
+                            ref="form"
                             type={this.user}
                             options={this.options}
+                        />
+                        <CheckBox
+                            center
+                            title='Soy empresa'
+                            iconRight
+                            iconType='material'
+                            checkedIcon='clear'
+                            uncheckedIcon='add'
+                            checkedColor='red'
+                            checked={this.state.isCompany}
+                            onPress={() => {
+                                this.setState((prevState) => {
+                                    return {
+                                        isCompany: !prevState.isCompany
+                                    }
+                                })
+                            }}
                         />
                         <AppButton
                             bgColor="rgba(111, 38, 74, 0.7)"

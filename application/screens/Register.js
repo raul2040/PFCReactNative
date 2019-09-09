@@ -85,7 +85,7 @@ export default class Register extends Component {
                             iconColor="#fff"
                         />
                         <Button
-                            title={`¿Quieres registrarte cómo ${label}`}
+                            title={`¿Quieres registrarte cómo ${label}?`}
                             type="clear"
                             onPress={this.changeSignUp.bind(this)}
                         />
